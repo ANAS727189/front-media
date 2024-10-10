@@ -29,6 +29,9 @@ export const UploadForm = ({ onUploadSuccess }) => {
       const response = await fetch('https://backend-media-hets.onrender.com/upload', {
         method: 'POST',
         body: formData,
+        headers: {
+          'Accept': 'application/json',
+        },
       });
 
       if (response.ok) {

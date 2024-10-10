@@ -19,7 +19,7 @@ const VideoStreaming = () => {
         setUploadedVideos(videos);
       } catch (error){
         console.error("Error fetching videos:", error);
-      }
+      } 
     };
     fetchVideos();
   }, []);
