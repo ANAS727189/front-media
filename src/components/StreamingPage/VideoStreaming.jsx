@@ -14,7 +14,7 @@ const VideoStreaming = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await fetch("http://localhost:8000/videos");
+        const response = await fetch("https://backend-media-hets.onrender.com/videos");
         const videos = await response.json();
         setUploadedVideos(videos);
       } catch (error){

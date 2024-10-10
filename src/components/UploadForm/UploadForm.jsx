@@ -26,7 +26,7 @@ export const UploadForm = ({ onUploadSuccess }) => {
     formData.append('description', description); // Send the description along with file
 
     try {
-      const response = await fetch('http://localhost:8000/upload', {
+      const response = await fetch('https://backend-media-hets.onrender.com/upload', {
         method: 'POST',
         body: formData,
       });
