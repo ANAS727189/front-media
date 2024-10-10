@@ -29,21 +29,28 @@ export const UploadForm = ({ onUploadSuccess }) => {
       const response = await fetch('https://backend-media-hets.onrender.com/upload', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
         headers: {
           'Accept': 'application/json',
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        onUploadSuccess(data.video.videoPath); // Adjust according to returned object
-        setUploadSuccess(true);
-      }
-    } catch (error) {
-      console.error('Error uploading video:', error);
-    } finally {
-      setUploading(false);
-    }
+    
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Upload failed');
+  }
+
+  const data = await response.json();
+  onUploadSuccess(data.video.videoPath);
+  setUploadSuccess(true);
+} catch (error) {
+  console.error('Error uploading video:', error);
+  // You might want to show this error to the user
+  setError(error.message || 'Failed to upload video');
+} finally {
+  setUploading(false);
+}
   };
 
   return (

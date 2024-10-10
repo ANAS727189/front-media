@@ -10,20 +10,26 @@ const VideoStreaming = () => {
   const { darkMode } = ToggleTheme();
   const [videoUrl, setVideoUrl] = useState(null);
   const [uploadedVideos, setUploadedVideos] = useState([]);
-
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await fetch("https://backend-media-hets.onrender.com/videos");
+        const response = await fetch("https://backend-media-hets.onrender.com/videos", {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const videos = await response.json();
         setUploadedVideos(videos);
-      } catch (error){
+      } catch (error) {
         console.error("Error fetching videos:", error);
-      } 
+      }
     };
     fetchVideos();
   }, []);
 
+  
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
