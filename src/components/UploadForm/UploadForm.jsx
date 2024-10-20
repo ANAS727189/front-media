@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { Upload, X, CheckCircle } from 'lucide-react';
 import { ToggleTheme } from "../../context/UserContext";
 
-
 export const UploadForm = ({ onUploadSuccess }) => {
   const { darkMode } = ToggleTheme();
   const [file, setFile] = useState(null);
-  const [description, setDescription] = useState(''); // New state for description
+  const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [error, setError] = useState(null);  // Error state
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -21,9 +21,10 @@ export const UploadForm = ({ onUploadSuccess }) => {
     if (!file) return;
 
     setUploading(true);
+    setError(null);  // Reset the error state before a new attempt
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('description', description); // Send the description along with file
+    formData.append('description', description);
 
     try {
       const response = await fetch('https://backend-media-hets.onrender.com/upload', {
@@ -35,22 +36,20 @@ export const UploadForm = ({ onUploadSuccess }) => {
         },
       });
 
-    
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Upload failed');
-  }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
+      }
 
-  const data = await response.json();
-  onUploadSuccess(data.video.videoPath);
-  setUploadSuccess(true);
-} catch (error) {
-  console.error('Error uploading video:', error);
-  // You might want to show this error to the user
-  setError(error.message || 'Failed to upload video');
-} finally {
-  setUploading(false);
-}
+      const data = await response.json();
+      onUploadSuccess(data.video.videoPath);
+      setUploadSuccess(true);
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      setError(error.message || 'Failed to upload video');  // Set error message
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -110,7 +109,13 @@ export const UploadForm = ({ onUploadSuccess }) => {
             className={`mt-1 p-2 w-full border rounded-md ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100'}`}
           />
         </div>
-        
+
+        {error && (  // Display error if exists
+          <div className="mt-4 text-red-500">
+            {error}
+          </div>
+        )}
+
         <button
           type="submit"
           disabled={!file || uploading}
