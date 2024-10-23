@@ -14,7 +14,7 @@ export const VideoCard = ({ thumbnail, title, views, duration, onClick }) => {
     >
       <div className="relative aspect-video">
         <img 
-          src={thumbnail} 
+          src={thumbnail || '/videos/thumbnails/earth.png'} 
           alt={title} 
           className="w-full h-full object-cover"
         />
