@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Search, Bell, Moon, Sun } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, Bell, Moon, Sun, Github } from "lucide-react";
 import { ToggleTheme } from "../../context/UserContext";
 import {
   SignedIn,
@@ -9,13 +9,19 @@ import {
   UserButton,
   useUser as ClerkUser,
 } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const { darkMode, toggleTheme } = ToggleTheme();
   const { user } = ClerkUser();
-
   const navigate = useNavigate();
+
+  const handleProtectedRoute = (route) => {
+    if (user) {
+      navigate(route);
+    } else {
+      navigate("/sign-in");
+    }
+  };
 
   return (
     <nav
@@ -54,30 +60,30 @@ export const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/docs"
+            <button
+              onClick={() => handleProtectedRoute("/docs")}
               className={`text-${
                 darkMode ? "white" : "gray-900"
               } font-medium hover:text-blue-500 transition-colors`}
             >
               Docs
-            </Link>
-            <Link
-              to="/video-streaming"
+            </button>
+            <button
+              onClick={() => handleProtectedRoute("/video-streaming")}
               className={`text-${
                 darkMode ? "white" : "gray-900"
               } font-medium hover:text-blue-500 transition-colors`}
             >
               Videos
-            </Link>
-            <Link
-              to="/media"
+            </button>
+            <button
+              onClick={() => handleProtectedRoute("/media")}
               className={`text-${
                 darkMode ? "white" : "gray-900"
               } font-medium hover:text-blue-500 transition-colors`}
             >
               Editor Studio
-            </Link>
+            </button>
 
             {user?.primaryEmailAddress?.emailAddress.endsWith(
               "@iiitdwd.ac.in"
@@ -129,6 +135,17 @@ export const Navbar = () => {
               )}
             </button>
 
+            <Github
+              className={`rounded-full transition cursor-pointer ${
+                darkMode ? "text-white" : "text-gray-900"
+              }`}
+              onClick={() =>
+                window.open(
+                  "https://github.com/ANAS727189/MediaHub/tree/master"
+                )
+              }
+            />
+
             {/* User Section */}
             <SignedIn>
               <div className="flex items-center space-x-4">
@@ -143,7 +160,7 @@ export const Navbar = () => {
               </div>
             </SignedIn>
             <SignedOut>
-              <SignInButton />
+              <SignInButton className="text-white font-bold" />
             </SignedOut>
           </div>
         </div>

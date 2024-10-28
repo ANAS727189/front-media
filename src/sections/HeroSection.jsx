@@ -2,10 +2,21 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Play, Shield, Zap, Users } from "lucide-react";
 import { ToggleTheme } from "../context/UserContext";
+import { useUser as ClerkUser } from "@clerk/clerk-react";
 
 const HeroSection = () => {
   const navigate = useNavigate();
   const { darkMode } = ToggleTheme();
+  const { user } = ClerkUser();
+
+  const handleProtectedRoute = (route) => {
+    if (user) {
+      navigate(route);
+    } else {
+      navigate("/sign-in"); 
+    }
+  };
+
 
   const stats = [
     {
@@ -81,7 +92,7 @@ const HeroSection = () => {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
               <button
-                onClick={() => navigate("/video-streaming")}
+                  onClick={() => handleProtectedRoute("/video-streaming")}
                 className={`inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm ${
                   darkMode
                     ? "text-gray-900 bg-white hover:bg-gray-100"
@@ -98,7 +109,7 @@ const HeroSection = () => {
                 />
               </button>
               <button
-                onClick={() => navigate("/docs")}
+                onClick={() => handleProtectedRoute("/docs")}
                 className={`inline-flex items-center px-8 py-3 border text-base font-medium rounded-md shadow-sm ${
                   darkMode
                     ? "border-gray-300 text-white bg-transparent hover:bg-gray-700"
